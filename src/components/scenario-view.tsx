@@ -1,11 +1,13 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { Info, Minimize2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { SceneRenderer } from "@/components/scene/scene-renderer"
 import { PointGraphs } from "@/components/timeline/point-graphs"
 import { Transport } from "@/components/timeline/transport"
 import { ScenarioProgress } from "@/components/scenario-progress"
+import { ShareDialog } from "@/components/share-dialog"
 import { sampleScenario, trackedState } from "@/engine/scenario"
 import { usePlayback } from "@/engine/use-playback"
 import { getScenarioIndex, scenarios } from "@/scenarios"
@@ -18,6 +20,18 @@ export function ScenarioView({ slug }: { slug: string }) {
   const links = useMemo(() => scenarios.map(({ slug, title }) => ({ slug, title })), [])
 
   const { toggle, seek, pause, time } = playback
+
+  // On the last scenario, invite the user to share once the animation has played to the end.
+  const isLast = index === scenarios.length - 1
+  const finished = isLast && !scenario.loop && !playback.playing && time >= scenario.duration
+  const [shareOpen, setShareOpen] = useState(false)
+  const [shareShown, setShareShown] = useState(false)
+  const [infoCollapsed, setInfoCollapsed] = useState(false)
+  if (finished && !shareShown) {
+    setShareShown(true)
+    setShareOpen(true)
+  }
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
@@ -40,7 +54,21 @@ export function ScenarioView({ slug }: { slug: string }) {
       {/* scene */}
       <section className="relative min-h-0 flex-[3] bg-[var(--blueprint-bg)]">
         <SceneRenderer scenario={scenario} time={playback.time} />
-        <header className="pointer-events-none absolute top-4 left-4 max-w-md rounded-xl border bg-background/75 p-4 backdrop-blur">
+        {infoCollapsed && (
+          <button
+            type="button"
+            onClick={() => setInfoCollapsed(false)}
+            aria-label="Show scenario explanation"
+            className="fixed top-3 left-3 z-40 flex size-11 items-center justify-center rounded-full border bg-background/75 shadow-sm backdrop-blur md:hidden"
+          >
+            <Info className="size-5" />
+          </button>
+        )}
+        <header
+          className={`pointer-events-none fixed top-3 right-3 left-3 z-40 rounded-xl border bg-background/75 p-4 backdrop-blur md:absolute md:top-4 md:right-auto md:left-4 md:z-auto md:block md:max-w-md ${
+            infoCollapsed ? "hidden" : ""
+          }`}
+        >
           <div className="font-mono text-xs text-muted-foreground">
             Scenario {index + 1} / {scenarios.length}
           </div>
@@ -52,6 +80,16 @@ export function ScenarioView({ slug }: { slug: string }) {
                 {c}
               </Badge>
             ))}
+          </div>
+          <div className="mt-3 flex justify-end md:hidden">
+            <button
+              type="button"
+              onClick={() => setInfoCollapsed(true)}
+              aria-label="Collapse scenario explanation"
+              className="pointer-events-auto flex size-11 items-center justify-center rounded-full border bg-background shadow-sm"
+            >
+              <Minimize2 className="size-5" />
+            </button>
           </div>
         </header>
       </section>
@@ -75,6 +113,7 @@ export function ScenarioView({ slug }: { slug: string }) {
       </section>
 
       <ScenarioProgress items={links} current={index} />
+      {isLast && <ShareDialog open={shareOpen} onOpenChange={setShareOpen} />}
     </div>
   )
 }

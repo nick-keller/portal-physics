@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { ScenarioView } from "@/components/scenario-view"
 import { getScenario, scenarios } from "@/scenarios"
+import { pageMetadata, SITE_NAME } from "@/lib/site-metadata"
 
 export function generateStaticParams() {
   return scenarios.map((s) => ({ slug: s.slug }))
@@ -11,7 +12,12 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/[slug]">): Promise<Metadata> {
   const { slug } = await params
   const scenario = getScenario(slug)
-  return { title: scenario ? `${scenario.title} · Portal physics` : "Portal physics" }
+  if (!scenario) return pageMetadata({ title: SITE_NAME, path: "/" })
+  return pageMetadata({
+    title: `${scenario.title} · ${SITE_NAME}`,
+    description: scenario.description,
+    path: `/${scenario.slug}`,
+  })
 }
 
 export default function ScenarioPage({ params }: PageProps<"/[slug]">) {
