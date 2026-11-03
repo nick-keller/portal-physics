@@ -33,7 +33,7 @@ export const scenarios: Scenario[] = [
   portalBlockPiston,
   portalDropOnCube,
   portalDropOnCubeFrames,
-  portalDropOnCubeLaunch,
+  // portalDropOnCubeLaunch,
   pistonLaunch,
   pistonLaunchPortal,
   portalSwallowsPiston,

@@ -32,8 +32,8 @@ export const pistonLaunch: ScenarioDefinition = {
   slug: "piston-launch",
   title: "Inertia",
   description:
-    "You may not be convinced that the previous scenario works, so lets simplify everything. Here the piston moves the cube up and stops, but since nothing acts on the cube, it keeps its speed and shoots up, this is called inertia.",
-  concepts: ["Piston", "Launch", "Gravity", "Impact"],
+    "Before changing our hypothesis, lets look at a simple scenario. Here the piston moves the cube up and stops, but since nothing acts on the cube, it keeps its speed and shoots up, this is called inertia.",
+  concepts: ["Launch", "Gravity", "Impact"],
   loop: false,
   cube: {
     size: 1,

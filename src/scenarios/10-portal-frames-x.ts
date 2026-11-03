@@ -11,6 +11,6 @@ export const portalFramesX: ScenarioDefinition = {
   title: "Simplifying",
   description:
     "While we are at it, since Y does not change now, we can just track position and speed along X.",
-  concepts: ["Portals", "Reference frame", "One dimension"],
+  concepts: ["One dimension"],
   trackedPoints: portalFrames.trackedPoints.map((p) => ({ ...p, series: ["x", "vx"] })),
 }

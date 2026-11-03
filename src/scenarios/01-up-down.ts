@@ -24,8 +24,8 @@ export const upDown: ScenarioDefinition = {
   slug: "up-down",
   title: "Tracking position",
   description:
-    "We can track the position of a single point of the cube over time. Here we track a point at the bottom.",
-  concepts: ["Reference point", "Keyframes", "Bezier interpolation"],
+    "We can track the position of a single point of the cube over time. Here we track a point at the bottom. Click on the arrow on the bottom right of your screen to see the next scenario!",
+  concepts: ["Position"],
   loop: true,
   cube: {
     size: 1,

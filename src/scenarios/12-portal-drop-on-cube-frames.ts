@@ -13,8 +13,8 @@ export const portalDropOnCubeFrames: ScenarioDefinition = {
   slug: "portal-drop-on-cube-frames",
   title: "A jump in speed for no reason?",
   description:
-    "We now measure position and speed relative to the portals, which improves readability. But how to you explain the remaining jump in speed? We saw earlier that a jump in speeds happens when the cube hits something hard, but here there is nothing in its way... Maybe our assumption was wrong?",
-  concepts: ["Moving portal", "Reference frame", "Discontinuous speed"],
+    "We now measure position and speed relative to the portals, which improves readability. But how do you explain the remaining jump in speed? We saw earlier that a jump in speed happens when the cube hits something hard, but here, there is nothing in its way... Maybe our assumption was wrong?",
+  concepts: ["Discontinuous speed"],
   reference: { label: "P", portals: true },
   trackedPoints: portalDropOnCube.trackedPoints.map((p) => ({ ...p, series: ["x", "vx"] })),
 }

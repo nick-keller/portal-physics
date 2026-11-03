@@ -15,7 +15,7 @@ export const portalTurn: ScenarioDefinition = {
   title: "Rotated portals",
   description:
     "When one of the portal is rotated, the position AND the speed jump abruptly. All the speed in the X direction is instantly transferred in the Y direction. Earlier we saw that only hitting something hard could explain a jump in speed, so we must be measuring it wrong.",
-  concepts: ["Portals", "Direction of speed", "Discontinuous speed"],
+  concepts: ["Direction of speed"],
   trackedPoints: [{ id: "center", label: "Centre", local: { x: 0, y: 0 }, series: ["x", "y", "vx", "vy"] }],
   view: { min: { x: -6, y: -2 }, max: { x: 3.5, y: 3.5 } },
   props: [

@@ -52,7 +52,7 @@ export const portalBlockPiston: ScenarioDefinition = {
   title: "Moving portals",
   description:
     "Moving portals are easy as long as they move \"together\", meaning that their relative speed is 0 to one another. Notice that even tho the cube is not moving, since we measure its position relative to the portal, it actually has a speed!",
-  concepts: ["Moving portal", "Piston", "Reference frame", "Continuity"],
+  concepts: ["Moving portals"],
   loop: true,
   cube: {
     size: 1,

@@ -11,7 +11,7 @@ export const portalFrames: ScenarioDefinition = {
   slug: "portal-frames",
   title: "Measuring from the portals",
   description:
-    "Just like we did before, measuring position and speed relative to the portals fixes all the jumps. Physics works again.",
-  concepts: ["Portals", "Reference frame", "Continuity"],
+    "Just like we did before, measuring position and speed relative to the portals fixes all the jumps. Yay, physics works again!",
+  concepts: ["Reference frame", "Continuity"],
   reference: { label: "P", portals: true },
 }

@@ -26,7 +26,7 @@ export const portalsApart: ScenarioDefinition = {
   title: "Splitting portals apart",
   description:
     "Now that the two portals are split apart, the cube teleports. Even tho the position jumps abruptly, the speed is unaffected: \"Speedy things goes in, speedy things come out\".",
-  concepts: ["Portals", "Discontinuous position", "Continuous speed"],
+  concepts: ["Discontinuous position"],
   view: { min: { x: -3.5, y: -0.8 }, max: { x: 3.5, y: 7.8 } },
   props: [
     { kind: "floor", y: FLOOR, from: -50, to: 50 },

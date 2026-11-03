@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Info, Minimize2 } from "lucide-react"
+import { Info, Minimize2, Share2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { SceneRenderer } from "@/components/scene/scene-renderer"
 import { PointGraphs } from "@/components/timeline/point-graphs"
 import { Transport } from "@/components/timeline/transport"
@@ -81,6 +82,15 @@ export function ScenarioView({ slug }: { slug: string }) {
               </Badge>
             ))}
           </div>
+          {isLast && (
+            <Button
+              onClick={() => setShareOpen(true)}
+              className="pointer-events-auto mt-3 bg-orange-500 text-white hover:bg-orange-600"
+            >
+              <Share2 />
+              Share the demo
+            </Button>
+          )}
           <div className="mt-3 flex justify-end md:hidden">
             <button
               type="button"

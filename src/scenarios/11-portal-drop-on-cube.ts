@@ -35,7 +35,7 @@ export const portalDropOnCube: ScenarioDefinition = {
   title: "One moving portal, one stationnary",
   description:
     "Now what happens when only one of the portal is moving? Let's assume the cube stays in place and measure its position and speed. The speed and position jump, but we know how to fix it right?",
-  concepts: ["Moving portal", "World frame", "Discontinuous speed"],
+  concepts: ["Relative speed"],
   loop: false,
   cube: {
     size: 1,

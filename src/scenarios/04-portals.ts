@@ -28,8 +28,8 @@ export const portals: ScenarioDefinition = {
   slug: "portals",
   title: "A door made of portals",
   description:
-    "Two portals placed back to back changes nothing.",
-  concepts: ["Portals", "Continuity"],
+    "Two portals placed back to back changes nothing. It acts like a hoop or a door.",
+  concepts: ["Portals"],
   loop: true,
   cube: {
     size: 1,
