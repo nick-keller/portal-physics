@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +24,15 @@ export function ScenarioProgress({
   const prev = items[current - 1];
   const next = items[current + 1];
   const progress = items.length > 1 ? current / (items.length - 1) : 1;
+  // On the first scenario, point at the next step to invite the user forward.
+  const hintIndex = current === 0 && items.length > 1 ? 1 : -1;
+  // Wait for roughly one run of the scene animation before showing the hint.
+  const [hintVisible, setHintVisible] = useState(false);
+  useEffect(() => {
+    if (hintIndex < 0) return;
+    const id = setTimeout(() => setHintVisible(true), 3500);
+    return () => clearTimeout(id);
+  }, [hintIndex]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef<HTMLAnchorElement>(null);
 
@@ -45,9 +54,13 @@ export function ScenarioProgress({
 
       <div
         ref={scrollRef}
-        className="min-w-0 flex-1 overflow-x-auto overscroll-x-contain py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className={cn(
+          "min-w-0 flex-1 overflow-x-auto overscroll-x-contain py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          // Extra top room for the hint arrow, pulled up so the nav height is unchanged.
+          hintIndex >= 0 && "pointer-events-none -mt-17 pt-18.5",
+        )}
       >
-        <div className="relative flex w-full min-w-max items-center justify-between gap-6 px-2">
+        <div className="pointer-events-auto relative flex w-full min-w-max items-center justify-between gap-6 px-2">
           <div className="absolute inset-x-4 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-border" />
           <div
             className="absolute top-1/2 left-4 h-0.5 -translate-y-1/2 rounded-full bg-primary transition-[width]"
@@ -74,6 +87,20 @@ export function ScenarioProgress({
                 }
               >
                 {i + 1}
+                {i === hintIndex && hintVisible && (
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-0 bottom-full mb-1 flex flex-col items-center"
+                  >
+                    <span className="text-sm font-medium whitespace-nowrap text-orange-500">
+                      Next scenario
+                    </span>
+                    <ArrowDownIcon
+                      strokeWidth={3}
+                      className="size-10 shrink-0 text-orange-500 motion-safe:animate-[next-hint_1s_ease-in-out_infinite]"
+                    />
+                  </span>
+                )}
               </TooltipTrigger>
               <TooltipContent>{item.title}</TooltipContent>
             </Tooltip>

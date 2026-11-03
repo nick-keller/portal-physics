@@ -145,3 +145,7 @@
   20%, 60% { transform: rotate(-25deg); }
   40%, 80% { transform: rotate(10deg); }
 }
+@keyframes next-hint {
+  0%, 100% { transform: translateY(-4px); opacity: 1; }
+  50% { transform: translateY(2px); opacity: 0.25; }
+}
