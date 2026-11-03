@@ -12,9 +12,9 @@ const ORANGE = { x: 2, y: -1 }
 export const portalTurn: ScenarioDefinition = {
   ...portals,
   slug: "portal-turn",
-  title: "Speed keeps its size, not its direction",
+  title: "Rotated portals",
   description:
-    "Same cube, same motion, but the orange portal is rotated. Its position jumps, as before. Its speed jumps too, but only in direction: the portal turns it a quarter turn, so vx suddenly drops to zero while vy suddenly takes its value. The cube goes just as fast, in a new direction.",
+    "When one of the portal is rotated, the position AND the speed jump abruptly. All the speed in the X direction is instantly transferred in the Y direction. Earlier we saw that only hitting something hard could explain a jump in speed, so we must be measuring it wrong.",
   concepts: ["Portals", "Direction of speed", "Discontinuous speed"],
   trackedPoints: [{ id: "center", label: "Centre", local: { x: 0, y: 0 }, series: ["x", "y", "vx", "vy"] }],
   view: { min: { x: -6, y: -2 }, max: { x: 3.5, y: 3.5 } },
@@ -29,6 +29,9 @@ export const portalTurn: ScenarioDefinition = {
         { x: BLUE.x, y: ORANGE.y + 2 },
       ],
     },
+    // Folded space: the shoulder sits 4 units left of the blue portal, on the
+    // ground (the floor is 1 unit below the cube's centre).
+    { kind: "claw", mount: { x: -4, y: 0 }, post: BLUE.y - ORANGE.y },
     { kind: "portal", position: BLUE, height: 1.8, color: "blue", facing: "left" },
     { kind: "portal", position: ORANGE, height: 1.8, color: "orange", facing: "up" },
   ],

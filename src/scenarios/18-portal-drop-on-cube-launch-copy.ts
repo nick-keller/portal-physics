@@ -27,7 +27,7 @@ export const portalDropOnCubeLaunchCopy: ScenarioDefinition = {
   slug: "portal-drop-on-cube-launch-copy",
   title: "It was never about the piston",
   description:
-    "If we remove the piston, we have the same result, it was never about the piston.",
+    "If we make the piston even smaller it should still work. We can make it so small that it is basically 0, we would have the same result: it was never about the piston.",
   concepts: ["Moving portal", "Reference frame", "Gravity", "Continuous speed"],
   cube: {
     size: 1,

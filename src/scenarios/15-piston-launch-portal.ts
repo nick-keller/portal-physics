@@ -30,8 +30,9 @@ const TOP = FLOOR + STROKE + HALF // cube centre resting on the extended piston
 export const pistonLaunchPortal: ScenarioDefinition = {
   ...pistonLaunch,
   slug: "piston-launch-portal",
+  title: 'Inertia through a portal',
   description:
-    "This is the same scenario, but the piston and the whole cube come out of the orange portal.",
+    "If we make the piston and cube come out of a portal instead of the floor, inertia still works.",
   cube: {
     size: SIZE,
     keyframes: [

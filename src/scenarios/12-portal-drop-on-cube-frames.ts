@@ -11,9 +11,9 @@ import { portalDropOnCube } from "./11-portal-drop-on-cube"
 export const portalDropOnCubeFrames: ScenarioDefinition = {
   ...portalDropOnCube,
   slug: "portal-drop-on-cube-frames",
-  title: "A jump in the wrong place",
+  title: "A jump in speed for no reason?",
   description:
-    "Now we track position from the portals. It removed the jump when the point passes through the portal, but we still have a jump in speed, even after the cube has passed, just like if the cube suddenly hit a wall... What makes the cube stop?",
+    "We now measure position and speed relative to the portals, which improves readability. But how to you explain the remaining jump in speed? We saw earlier that a jump in speeds happens when the cube hits something hard, but here there is nothing in its way... Maybe our assumption was wrong?",
   concepts: ["Moving portal", "Reference frame", "Discontinuous speed"],
   reference: { label: "P", portals: true },
   trackedPoints: portalDropOnCube.trackedPoints.map((p) => ({ ...p, series: ["x", "vx"] })),

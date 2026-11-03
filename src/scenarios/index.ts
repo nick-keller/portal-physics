@@ -7,6 +7,7 @@ import { portalsApart } from "./05-portals-apart"
 import { portalsApartFrames } from "./06-portals-apart-frames"
 import { portalTurn } from "./08-portal-turn"
 import { portalFrames } from "./09-portal-frames"
+import { portalBlockPiston } from "./09b-portal-block-piston"
 import { portalFramesX } from "./10-portal-frames-x"
 import { portalDropOnCube } from "./11-portal-drop-on-cube"
 import { portalDropOnCubeFrames } from "./12-portal-drop-on-cube-frames"
@@ -29,6 +30,7 @@ export const scenarios: Scenario[] = [
   portalTurn,
   portalFrames,
   portalFramesX,
+  portalBlockPiston,
   portalDropOnCube,
   portalDropOnCubeFrames,
   portalDropOnCubeLaunch,

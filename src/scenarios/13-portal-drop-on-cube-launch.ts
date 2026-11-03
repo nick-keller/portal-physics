@@ -25,9 +25,9 @@ const END = IMPACT + 1.5
 export const portalDropOnCubeLaunch: ScenarioDefinition = {
   ...portalDropOnCubeFrames,
   slug: "portal-drop-on-cube-launch",
-  title: "Speed goes through",
+  title: "Changing our assumption",
   description:
-    "What if the cube keeps its speed when coming out of the orange portal? It leaves going up as fast as the blue portal came down, then gravity slows it, pulls it back, and the floor stops it. The speed no longer jumps when the portal stops: the only remaining jump is the impact, and that one has a reason.",
+    "Since nothing is stopping the cube, let's see what happens if we let it continue. It shoots up at the same speed the blue portal is coming down. Eventually gravity pulls it back down, and the floor makes it stop abruptly. This time the cube stops because it hits something hard, which is expected!",
   concepts: ["Moving portal", "Reference frame", "Gravity", "Continuous speed"],
   cube: {
     size: 1,
@@ -39,7 +39,7 @@ export const portalDropOnCubeLaunch: ScenarioDefinition = {
     ],
   },
   props: portalDropOnCube.props?.map((p) =>
-    p.kind === "portal" && p.path
+    (p.kind === "portal" || p.kind === "solid") && p.path
       ? { ...p, path: [...p.path.slice(0, -1), { ...p.path[p.path.length - 1], t: END }] }
       : p,
   ),

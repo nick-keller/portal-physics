@@ -30,9 +30,9 @@ const TOP = REST + STROKE // cube centre resting on the extended piston
  */
 export const pistonLaunch: ScenarioDefinition = {
   slug: "piston-launch",
-  title: "The piston stops, the cube does not",
+  title: "Inertia",
   description:
-    "A piston under the cube pushes it up and stops dead after 2 units. The cube was moving with it, and nothing is holding it down, so it keeps going: it leaves the piston at full speed, gravity slows it, pulls it back down, and it lands on the piston again, where it stops. The speed jumps only when the cube hits something.",
+    "You may not be convinced that the previous scenario works, so lets simplify everything. Here the piston moves the cube up and stops, but since nothing acts on the cube, it keeps its speed and shoots up, this is called inertia.",
   concepts: ["Piston", "Launch", "Gravity", "Impact"],
   loop: false,
   cube: {

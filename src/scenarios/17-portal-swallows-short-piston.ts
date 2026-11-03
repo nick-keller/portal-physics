@@ -38,9 +38,9 @@ const END = IMPACT + 1.5
  */
 export const portalSwallowsShortPiston: ScenarioDefinition = {
   slug: "portal-swallows-short-piston",
-  title: "The piston is just shorter",
+  title: "A shorter piston",
   description:
-    "Exact same scenario, but a ridiculously small piston.",
+    "The actual size of the piston does not matter. We can make it shorter and the cube would still shoot up.",
   concepts: ["Moving portal", "Piston", "Launch", "Gravity"],
   loop: false,
   cube: {

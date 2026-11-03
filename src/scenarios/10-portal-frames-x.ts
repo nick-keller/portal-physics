@@ -8,9 +8,9 @@ import { portalFrames } from "./09-portal-frames"
 export const portalFramesX: ScenarioDefinition = {
   ...portalFrames,
   slug: "portal-frames-x",
-  title: "Only x moves",
+  title: "Simplifying",
   description:
-    "Measured this way, y and vy stay at zero the whole time, so we stop showing them: the whole trip, through the portals and back, is described by x and vx alone, exactly as when the portals touched.",
+    "While we are at it, since Y does not change now, we can just track position and speed along X.",
   concepts: ["Portals", "Reference frame", "One dimension"],
   trackedPoints: portalFrames.trackedPoints.map((p) => ({ ...p, series: ["x", "vx"] })),
 }

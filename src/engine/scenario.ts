@@ -33,8 +33,12 @@ export type PoseKeyframe = Omit<Keyframe, "value" | "slopeIn" | "slopeOut"> & {
 export type SceneProp =
   /** Solid ground whose top surface is at `y`. */
   | { kind: "floor"; y: number; from: number; to: number }
-  /** A fixed solid block (platform, ramp…): a closed polygon, world coordinates. */
-  | { kind: "solid"; points: Vec2[] }
+  /**
+   * A solid block (platform, ramp…): a closed polygon, world coordinates.
+   * `path`, if given, animates an offset added to every point (keyframe
+   * angles are ignored), e.g. to carry a block that holds portals.
+   */
+  | { kind: "solid"; points: Vec2[]; path?: PoseKeyframe[] }
   /**
    * Two hinged doors meeting at `position` (centre of their top surface).
    * `open` animates the door angle in degrees: 0 = closed, 90 = hanging down.
@@ -48,6 +52,8 @@ export type SceneProp =
    * e.g. when the piston comes out of a portal.
    * `cutAbove`, if given, animates a world height above which nothing of the
    * piston is drawn, e.g. when a portal comes down over it and swallows it.
+   * `cutBelow` likewise animates a world height below which nothing is drawn,
+   * e.g. for the part sticking out of a moving portal.
    */
   | {
       kind: "piston"
@@ -56,6 +62,7 @@ export type SceneProp =
       extension: Keyframe[]
       showBase?: boolean
       cutAbove?: Keyframe[]
+      cutBelow?: Keyframe[]
     }
   /**
    * A portal seen edge-on. `position` is the centre of its surface, `height`
@@ -70,6 +77,14 @@ export type SceneProp =
       facing: Facing
       path?: PoseKeyframe[]
     }
+  /**
+   * A robotic arm holding the cube by its left face. Authored in folded space
+   * (see `ScenarioDefinition.props`): `mount` is the shoulder joint, on the
+   * blue side, and the telescopic arm reaches from there to the cube, through
+   * the portals if the cube has gone through. `post` is the length of the
+   * column under the shoulder, down to the ground.
+   */
+  | { kind: "claw"; mount: Vec2; post: number }
 
 export type Facing = "left" | "right" | "up" | "down" | "up-right" | "up-left"
 
@@ -152,7 +167,12 @@ type PortalProp = Extract<SceneProp, { kind: "portal" }>
 
 /** Position curves of a portal prop: its `path` if animated, else constant at `position`. */
 export function portalPathCurves(prop: PortalProp, loop = false): { x: Curve; y: Curve } {
-  const path = prop.path?.length ? prop.path : [{ t: 0, x: prop.position.x, y: prop.position.y }]
+  return pathCurves(prop.path, prop.position, loop)
+}
+
+/** Position curves of a `path`, or constant at `fallback` without one. */
+export function pathCurves(path: PoseKeyframe[] | undefined, fallback: Vec2, loop = false): { x: Curve; y: Curve } {
+  if (!path?.length) path = [{ t: 0, x: fallback.x, y: fallback.y }]
   return {
     x: poseChannel(path, "x", (k) => k.x, { loop }),
     y: poseChannel(path, "y", (k) => k.y, { loop }),

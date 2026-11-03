@@ -1,4 +1,4 @@
-import type { ScenarioDefinition } from "@/engine/scenario"
+import type { PoseKeyframe, ScenarioDefinition } from "@/engine/scenario"
 
 const FLOOR = 0
 const HALF = 0.5
@@ -9,6 +9,13 @@ const START = 6 // blue portal height when the scene starts
 const SPEED = 8 // how fast the blue portal comes down
 const LAND = (START - FLOOR) / SPEED // blue portal touches the floor
 const END = LAND + 1.5
+const BLOCK = 2 // side of the square block carrying the blue portal underneath
+
+const BLUE_PATH: PoseKeyframe[] = [
+  { t: 0, x: CUBE_X, y: START, interpolation: "linear" },
+  { t: LAND, x: CUBE_X, y: FLOOR, interpolation: "linear" },
+  { t: END, x: CUBE_X, y: FLOOR },
+]
 
 /**
  * The cube rests on the floor; the blue portal, facing down, comes down over
@@ -25,9 +32,9 @@ const END = LAND + 1.5
  */
 export const portalDropOnCube: ScenarioDefinition = {
   slug: "portal-drop-on-cube",
-  title: "A still cube comes out moving",
+  title: "One moving portal, one stationnary",
   description:
-    "Until now, the two portals were fixed, now one moves relative to the other. The cube never moves, yet it comes out of the orange portal going up, as fast as the blue portal came down. Let's assume for now that it stops the instant it is fully out, sitting on the floor. Notice that the speed jumps twice",
+    "Now what happens when only one of the portal is moving? Let's assume the cube stays in place and measure its position and speed. The speed and position jump, but we know how to fix it right?",
   concepts: ["Moving portal", "World frame", "Discontinuous speed"],
   loop: false,
   cube: {
@@ -40,20 +47,27 @@ export const portalDropOnCube: ScenarioDefinition = {
   },
   trackedPoints: [{ id: "center", label: "Centre", local: { x: 0, y: 0 }, series: ["y", "vy"] }],
   reference: { label: "O", position: { x: 0, y: FLOOR } },
-  view: { min: { x: -4, y: -0.8 }, max: { x: 4, y: 7 } },
+  view: { min: { x: -4, y: -0.8 }, max: { x: 4, y: START + 0.8 } },
   props: [
     { kind: "floor", y: FLOOR, from: -50, to: 50 },
+    {
+      // 2 × 2 block sitting on the blue portal, carried down with it
+      kind: "solid",
+      points: [
+        { x: -BLOCK / 2, y: 0 },
+        { x: BLOCK / 2, y: 0 },
+        { x: BLOCK / 2, y: BLOCK },
+        { x: -BLOCK / 2, y: BLOCK },
+      ],
+      path: BLUE_PATH,
+    },
     {
       kind: "portal",
       position: { x: CUBE_X, y: START },
       height: 1.8,
       color: "blue",
       facing: "down",
-      path: [
-        { t: 0, x: CUBE_X, y: START, interpolation: "linear" },
-        { t: LAND, x: CUBE_X, y: FLOOR, interpolation: "linear" },
-        { t: END, x: CUBE_X, y: FLOOR },
-      ],
+      path: BLUE_PATH,
     },
     { kind: "portal", position: ORANGE, height: 1.8, color: "orange", facing: "up" },
   ],

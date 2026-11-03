@@ -4,7 +4,9 @@ import { useId, useMemo, type ReactNode } from "react"
 import {
   FACING_ANGLE,
   poseAt,
+  pathCurves,
   portalPathCurves,
+  type PoseKeyframe,
   portalSide,
   portalTransform,
   trackedReferenceFrame,
@@ -108,8 +110,11 @@ export function SceneRenderer({ scenario, time }: { scenario: Scenario; time: nu
         {/* props: floor, trapdoor… */}
         {scenario.props?.map((prop, i) => <Prop key={i} prop={prop} time={time} />)}
 
-        {/* the cube */}
+        {/* the cube, and the claw holding it */}
         <PortalCube scenario={scenario} time={time} />
+        {scenario.props?.map((prop, i) =>
+          prop.kind === "claw" ? <PortalClaw key={`claw${i}`} scenario={scenario} time={time} prop={prop} /> : null,
+        )}
 
         {/* reference point, with its axes when they are not the world's */}
         {movingFrame && <FrameAxes frame={frame} />}
@@ -237,6 +242,100 @@ function PortalCube({ scenario, time }: { scenario: Scenario; time: number }) {
   )
 }
 
+/**
+ * A robotic arm gripping the cube's left face, drawn in folded space. Like the
+ * cube, it is drawn once per side of the portal pair, each copy clipped to its
+ * half, so the arm goes into one portal and comes out of the other.
+ */
+function PortalClaw({
+  scenario,
+  time,
+  prop,
+}: {
+  scenario: Scenario
+  time: number
+  prop: Extract<SceneProp, { kind: "claw" }>
+}) {
+  const clipId = useId()
+  const pose = poseAt(scenario, time)
+  const size = scenario.cube.size
+  const { mount, post } = prop
+  const grip = localToWorld(pose, { x: -size / 2, y: 0 })
+  const reach = Math.hypot(grip.x - mount.x, grip.y - mount.y)
+  const aim = Math.atan2(grip.y - mount.y, grip.x - mount.x)
+
+  // Telescopic arm: equal sections, spread evenly between shoulder and wrist.
+  const SECTIONS = 4
+  const section = 2
+  const widths = [0.3, 0.24, 0.18, 0.12]
+  const ink = `${INK} fill-[var(--blueprint-bg)]`
+  const arm = (
+    <g transform={poseTransform({ position: mount, angle: aim })}>
+      {widths.map((w, i) => {
+        const start = ((reach - section) * i) / (SECTIONS - 1)
+        return (
+          <rect key={i} x={start} y={-w / 2} width={section} height={w} className={ink} strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+        )
+      })}
+      {/* wrist and gripper: a plate on the cube's face, fingers over its top and bottom */}
+      <g transform={`translate(${reach} 0)`}>
+        <rect x={-0.16} y={-0.62} width={0.12} height={1.24} className={ink} strokeWidth={2} vectorEffect="non-scaling-stroke" />
+        {([-1, 1] as const).map((side) => (
+          <path
+            key={side}
+            d={`M -0.16 ${side * 0.62} L 0.32 ${side * 0.62} L 0.32 ${side * 0.5} L -0.04 ${side * 0.5} Z`}
+            className={ink}
+            strokeWidth={2}
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        ))}
+        <circle cx={-0.22} r={0.07} className={ink} strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+      </g>
+    </g>
+  )
+  const base = (
+    <g>
+      {/* column down to the ground, with a foot */}
+      <rect x={mount.x - 0.14} y={mount.y - post} width={0.28} height={post} className={ink} strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+      <rect x={mount.x - 0.45} y={mount.y - post} width={0.9} height={0.14} className={ink} strokeWidth={2} vectorEffect="non-scaling-stroke" />
+      {/* motor housing at the shoulder */}
+      <rect x={mount.x - 0.4} y={mount.y - 0.3} width={0.6} height={0.6} rx={0.08} className={ink} strokeWidth={2} vectorEffect="non-scaling-stroke" />
+      <circle cx={mount.x} cy={mount.y} r={0.12} className={ink} strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+      <circle cx={mount.x} cy={mount.y} r={0.03} className="fill-[var(--blueprint-ink)]" />
+    </g>
+  )
+  const drawing = (
+    <>
+      {arm}
+      {base}
+    </>
+  )
+
+  if (!scenario.portalPair) return drawing
+  const half = (side: -1 | 1) => {
+    const anchor = portalTransform(scenario, side, time)
+    return (
+      <g key={side}>
+        <defs>
+          <clipPath id={`${clipId}${side}`}>
+            <rect transform={poseTransform(anchor)} x={side === -1 ? -500 : 0} y={-500} width={500} height={1000} />
+          </clipPath>
+        </defs>
+        <g clipPath={`url(#${clipId}${side})`}>
+          <g transform={poseTransform(anchor)}>{drawing}</g>
+        </g>
+      </g>
+    )
+  }
+  return (
+    <g>
+      {half(-1)}
+      {half(1)}
+    </g>
+  )
+}
+
 /** Short x / y axes drawn at a reference frame's origin, labelled upright. */
 function FrameAxes({ frame }: { frame: Pose }) {
   const length = 0.7
@@ -265,13 +364,15 @@ function Prop({ prop, time }: { prop: SceneProp; time: number }) {
     case "floor":
       return <Floor {...prop} />
     case "solid":
-      return <Solid points={prop.points} />
+      return <Solid points={prop.points} path={prop.path} time={time} />
     case "trapdoor":
       return <Trapdoor {...prop} time={time} />
     case "piston":
       return <Piston {...prop} time={time} />
     case "portal":
       return <Portal prop={prop} time={time} />
+    case "claw":
+      return null // drawn with the cube, see `PortalClaw`
   }
 }
 
@@ -316,10 +417,12 @@ function Floor({ y, from, to }: { y: number; from: number; to: number }) {
   )
 }
 
-function Solid({ points }: { points: Vec2[] }) {
+function Solid({ points, path, time }: { points: Vec2[]; path?: PoseKeyframe[]; time: number }) {
   const d = points.map((p) => `${p.x},${p.y}`).join(" ")
+  const curves = useMemo(() => (path?.length ? pathCurves(path, { x: 0, y: 0 }) : undefined), [path])
+  const offset = curves ? { x: evaluateCurve(curves.x, time), y: evaluateCurve(curves.y, time) } : undefined
   return (
-    <g>
+    <g transform={offset ? `translate(${offset.x} ${offset.y})` : undefined}>
       <polygon points={d} className="fill-[var(--blueprint-bg)]" />
       <polygon points={d} fill="url(#floor-hatch)" className={INK} strokeWidth={2.5} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
     </g>
@@ -388,6 +491,7 @@ function Piston({
   extension,
   showBase = true,
   cutAbove,
+  cutBelow,
   time,
 }: {
   position: Vec2
@@ -395,15 +499,18 @@ function Piston({
   extension: Parameters<typeof createCurve>[0]
   showBase?: boolean
   cutAbove?: Parameters<typeof createCurve>[0]
+  cutBelow?: Parameters<typeof createCurve>[0]
   time: number
 }) {
   const curve = useMemo(() => createCurve(extension), [extension])
   const cutCurve = useMemo(() => (cutAbove?.length ? createCurve(cutAbove) : undefined), [cutAbove])
+  const cutBelowCurve = useMemo(() => (cutBelow?.length ? createCurve(cutBelow) : undefined), [cutBelow])
   const lift = evaluateCurve(curve, time)
-  // Drawn region: above `position` only without a base, below the cut if any.
-  const clipBottom = showBase ? position.y - 1e3 : position.y
+  // Drawn region: above `position` only without a base, between the cuts if any.
+  const baseBottom = showBase ? position.y - 1e3 : position.y
+  const clipBottom = cutBelowCurve ? Math.max(baseBottom, evaluateCurve(cutBelowCurve, time)) : baseBottom
   const clipTop = cutCurve ? evaluateCurve(cutCurve, time) : position.y + 1e3
-  const clipped = !showBase || !!cutCurve
+  const clipped = !showBase || !!cutCurve || !!cutBelowCurve
   const clipId = useId()
   const head = 0.15
   const rod = width * 0.3

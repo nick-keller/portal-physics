@@ -1,4 +1,4 @@
-import type { ScenarioDefinition } from "@/engine/scenario"
+import type {PoseKeyframe, ScenarioDefinition} from "@/engine/scenario"
 
 /** Gravity, in world units (metres, the cube is 1 m wide) per second squared. */
 const G = 9.81
@@ -33,6 +33,11 @@ const VY = SPEED / SQRT2
 const FLIGHT = (VY + Math.sqrt(VY * VY + 2 * G * (Y0 - STOP_Y))) / G
 const END = LAND + FLIGHT
 
+const BLUE_PATH: PoseKeyframe[] = [
+  {t: 0, x: CUBE_X, y: START, interpolation: "linear"},
+  {t: LAND, x: CUBE_X, y: PLATFORM.top, interpolation: "linear"},
+  {t: END, x: CUBE_X, y: PLATFORM.top},
+];
 /**
  * The cube rests on a platform; the blue portal, facing down, comes down over
  * it until it touches the platform. The orange portal lies on a 45° ramp,
@@ -94,16 +99,23 @@ export const portalDropOnRampLaunch: ScenarioDefinition = {
       ],
     },
     {
+      // 2 × 2 block sitting on the blue portal, carried down with it
+      kind: "solid",
+      points: [
+        { x: -1, y: 0 },
+        { x: 1, y: 0 },
+        { x: 1, y: 2 },
+        { x: -1, y: 2 },
+      ],
+      path: BLUE_PATH,
+    },
+    {
       kind: "portal",
       position: { x: CUBE_X, y: START },
       height: 1.8,
       color: "blue",
       facing: "down",
-      path: [
-        { t: 0, x: CUBE_X, y: START, interpolation: "linear" },
-        { t: LAND, x: CUBE_X, y: PLATFORM.top, interpolation: "linear" },
-        { t: END, x: CUBE_X, y: PLATFORM.top },
-      ],
+      path: BLUE_PATH,
     },
     { kind: "portal", position: ORANGE, height: 1.8, color: "orange", facing: "up-right" },
   ],

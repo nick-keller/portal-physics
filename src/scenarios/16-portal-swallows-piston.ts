@@ -1,4 +1,4 @@
-import type { ScenarioDefinition } from "@/engine/scenario"
+import type {PoseKeyframe, ScenarioDefinition} from "@/engine/scenario"
 
 /** Gravity, in world units (metres, the cube is 1 m wide) per second squared. */
 const G = 9.81
@@ -17,6 +17,11 @@ const FLIGHT = (2 * SPEED) / G // up and back down to the same height, from v = 
 const IMPACT = LAND + FLIGHT
 const END = IMPACT + 1.5
 
+let BLUE_PATH: PoseKeyframe[] = [
+  { t: 0, x: LEFT_X, y: START, interpolation: "linear" },
+  { t: LAND, x: LEFT_X, y: FLOOR, interpolation: "linear" },
+  { t: END, x: LEFT_X, y: FLOOR },
+];
 /**
  * A still piston, extended 2 units, holds the cube up. The blue portal, facing
  * down, starts above the cube and comes down to the floor, swallowing the cube
@@ -38,9 +43,9 @@ const END = IMPACT + 1.5
  */
 export const portalSwallowsPiston: ScenarioDefinition = {
   slug: "portal-swallows-piston",
-  title: "The portal stops, the cube does not",
+  title: "Revealing the blue side",
   description:
-    "Now we discover what was on the blue side. This should not change what we observe on the orange side.",
+    "Now we discover what was on the blue side. This should not change what we observe on the orange side. The fact that the blue portal was the one moving should not stop the cube from launching once the piston stops.",
   concepts: ["Moving portal", "Piston", "Launch", "Gravity"],
   loop: false,
   cube: {
@@ -57,6 +62,17 @@ export const portalSwallowsPiston: ScenarioDefinition = {
   view: { min: { x: -4, y: -0.8 }, max: { x: 4, y: 7 } },
   props: [
     { kind: "floor", y: FLOOR, from: -50, to: 50 },
+    {
+      // 2 × 2 block sitting on the blue portal, carried down with it
+      kind: "solid",
+      points: [
+        { x: -1, y: 0 },
+        { x: 1, y: 0 },
+        { x: 1, y: 2 },
+        { x: -1, y: 2 },
+      ],
+      path: BLUE_PATH,
+    },
     {
       kind: "piston",
       position: { x: LEFT_X, y: FLOOR },
@@ -87,11 +103,7 @@ export const portalSwallowsPiston: ScenarioDefinition = {
       height: 1.8,
       color: "blue",
       facing: "down",
-      path: [
-        { t: 0, x: LEFT_X, y: START, interpolation: "linear" },
-        { t: LAND, x: LEFT_X, y: FLOOR, interpolation: "linear" },
-        { t: END, x: LEFT_X, y: FLOOR },
-      ],
+      path: BLUE_PATH,
     },
     { kind: "portal", position: ORANGE, height: 1.8, color: "orange", facing: "up" },
   ],
