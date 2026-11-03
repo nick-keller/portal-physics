@@ -17,6 +17,7 @@ import {
 } from "@/engine/scenario"
 import { createCurve, evaluateCurve } from "@/engine/curve"
 import { localToWorld, radToDeg, type Pose, type Vec2 } from "@/engine/math"
+import { formatNumber } from "@/lib/utils"
 import { CompanionCube } from "./companion-cube"
 
 const PAD = 0.5
@@ -153,9 +154,9 @@ export function SceneRenderer({ scenario, time }: { scenario: Scenario; time: nu
               </g>
               <circle cx={w.x} cy={w.y} r={0.065} className="fill-chart-3 stroke-white" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
               <Label at={{ x: w.x + scenario.cube.size * 0.6, y: w.y + 0.12 }} className="fill-white font-mono" size={FONT * 0.9}>
-                {showX && <tspan className="fill-chart-1">{showY ? "" : "x "}{rx.toFixed(2)}</tspan>}
+                {showX && <tspan className="fill-chart-1">{showY ? "" : "x "}{formatNumber(rx)}</tspan>}
                 {showX && showY && <tspan className="fill-white/60">, </tspan>}
-                {showY && <tspan className="fill-chart-2">{showX ? "" : "y "}{ry.toFixed(2)}</tspan>}
+                {showY && <tspan className="fill-chart-2">{showX ? "" : "y "}{formatNumber(ry)}</tspan>}
               </Label>
             </g>
           )

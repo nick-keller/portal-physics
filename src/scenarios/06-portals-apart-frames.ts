@@ -9,9 +9,11 @@ import { portalsApart } from "./05-portals-apart"
 export const portalsApartFrames: ScenarioDefinition = {
   ...portalsApart,
   slug: "portals-apart-frames",
-  title: "Measuring from the portals",
+  title: "A matter of reference",
   description:
-    "To avoid having the position jump, we now measure the cube from the portals instead of from a fixed point. While its centre is on the blue side, we measure from the blue portal, with x pointing into it; once through, we measure from the orange portal, with x pointing out of it. Seen this way, the jump in x disappears: going through the portals is just moving on, exactly as when they touched. The jump of the previous scenario came from the fixed reference, not from the motion itself.",
+    "To avoid this jump in position when the point passes through the portal, we can just change the reference point as it passes through. Now the position and speed are continuous, and physics still works!",
   concepts: ["Portals", "Reference frame", "Continuous position"],
   reference: { label: "P", portals: true },
+  // in a portal frame, x is the distance along the way through the portals
+  trackedPoints: [{ ...portalsApart.trackedPoints[0], series: ["x", "vx"] }],
 }

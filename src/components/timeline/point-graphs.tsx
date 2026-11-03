@@ -5,6 +5,7 @@ import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "rec
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart"
 import { trackedSeries, type Sample, type Series, type TrackedPoint } from "@/engine/scenario"
 import type { Playback } from "@/engine/use-playback"
+import { formatNumber } from "@/lib/utils"
 
 /** Plot-area insets; the cursor overlay relies on these matching the chart layout. */
 const MARGIN = { top: 6, right: 12, bottom: 0, left: 0 }
@@ -52,7 +53,7 @@ export function PointGraphs({
         <div className="font-mono tabular-nums">
           {series.map((s) => (
             <span key={s} className="ml-3" style={{ color: SERIES[s].color }}>
-              {SERIES[s].label} {fmt(value[s])}
+              {SERIES[s].label} {formatNumber(value[s])}
               {SERIES[s].unit}
             </span>
           ))}
@@ -155,7 +156,7 @@ const StaticChart = memo(function StaticChart({
           tickLine={false}
           axisLine={false}
           tickCount={3}
-          tickFormatter={(v: number) => fmt(v, 1)}
+          tickFormatter={(v: number) => formatNumber(v, 1)}
         />
         <Line
           // Function accessor: string keys containing dots are read as nested paths.
@@ -204,9 +205,4 @@ function Scrubber({ playback, children }: { playback: Playback; children: React.
       {children}
     </div>
   )
-}
-
-const fmt = (v: number, digits = 2) => {
-  const s = v.toFixed(digits)
-  return s === `-${(0).toFixed(digits)}` ? (0).toFixed(digits) : s
 }

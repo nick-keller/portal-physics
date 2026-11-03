@@ -5,7 +5,6 @@ import { drop } from "./03-drop"
 import { portals } from "./04-portals"
 import { portalsApart } from "./05-portals-apart"
 import { portalsApartFrames } from "./06-portals-apart-frames"
-import { squareLoop } from "./07-square-loop"
 import { portalTurn } from "./08-portal-turn"
 import { portalFrames } from "./09-portal-frames"
 import { portalFramesX } from "./10-portal-frames-x"
@@ -27,7 +26,6 @@ export const scenarios: Scenario[] = [
   portals,
   portalsApart,
   portalsApartFrames,
-  squareLoop,
   portalTurn,
   portalFrames,
   portalFramesX,

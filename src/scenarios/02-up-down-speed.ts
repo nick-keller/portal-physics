@@ -8,9 +8,9 @@ import { upDown } from "./01-up-down"
 export const upDownSpeed: ScenarioDefinition = {
   ...upDown,
   slug: "up-down-speed",
-  title: "Speed comes from position",
+  title: "Speed is just how fast you change position",
   description:
-    "Same cube, same motion. Speed is not stored anywhere: it is computed from position, as how much y changes over a tiny slice of time (vy ≈ Δy / Δt). Because the position curve is smooth, the speed is continuous too, it never jumps.",
+    "When the cube is not moving, the speed is zero. Notice that the speed can be negative, imagine your car showing a negative value when you reverse.",
   concepts: ["Speed", "Derivative", "Continuity"],
-  trackedPoints: [{ id: "center", label: "Centre", local: { x: 0, y: 0 }, series: ["y", "vy"] }],
+  trackedPoints: [{ ...upDown.trackedPoints[0], series: ["y", "vy"] }],
 }

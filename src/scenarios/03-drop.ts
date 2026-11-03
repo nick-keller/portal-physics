@@ -25,7 +25,7 @@ export const drop: ScenarioDefinition = {
   slug: "drop",
   title: "Speed changes for a reason",
   description:
-    "A hatch opens and the cube falls. Gravity acts on it the whole way down, so its speed grows steadily. Then it hits the floor. Its position stays continuous (the cube never teleports), but its speed drops to zero almost instantly, because the floor pushes back hard. Speed only changes when something acts on the cube: gravity changes it gradually, the impact changes it abruptly.",
+    "Notice that speed is continuous when the cube is in freefall. Hitting the ground makes it stop (almost) instantly, so the speed jumps. An object can only change speed instantly when it hits something hard.",
   concepts: ["Gravity", "Impact", "Discontinuous speed"],
   loop: false,
   cube: {

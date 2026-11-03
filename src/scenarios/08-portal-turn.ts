@@ -19,6 +19,16 @@ export const portalTurn: ScenarioDefinition = {
   trackedPoints: [{ id: "center", label: "Centre", local: { x: 0, y: 0 }, series: ["x", "y", "vx", "vy"] }],
   view: { min: { x: -6, y: -2 }, max: { x: 3.5, y: 3.5 } },
   props: [
+    { kind: "floor", y: ORANGE.y, from: -50, to: 50 },
+    {
+      kind: "solid",
+      points: [
+        { x: BLUE.x, y: ORANGE.y },
+        { x: BLUE.x + 1, y: ORANGE.y },
+        { x: BLUE.x + 1, y: ORANGE.y + 2 },
+        { x: BLUE.x, y: ORANGE.y + 2 },
+      ],
+    },
     { kind: "portal", position: BLUE, height: 1.8, color: "blue", facing: "left" },
     { kind: "portal", position: ORANGE, height: 1.8, color: "orange", facing: "up" },
   ],
