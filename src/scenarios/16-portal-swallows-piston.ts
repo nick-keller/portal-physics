@@ -43,9 +43,9 @@ let BLUE_PATH: PoseKeyframe[] = [
  */
 export const portalSwallowsPiston: ScenarioDefinition = {
   slug: "portal-swallows-piston",
-  title: "Revealing the blue side",
+  title: "Changing the blue side",
   description:
-    "Now we discover what was on the blue side. This should not change what we observe on the orange side. The fact that the blue portal was the one moving should not stop the cube from launching once the piston stops.",
+    "Now we change the blue side. This does not change the outcome because the cube is already on the orange side, moving at high speed, so it must keep its inertia. In other words, if you only look at the orange side, you have no way of knowing what happened on the blue side, to an observer the two situations are identical.",
   concepts: ["Moving portal", "Piston", "Launch", "Gravity"],
   loop: false,
   cube: {

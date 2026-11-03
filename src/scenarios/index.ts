@@ -14,6 +14,7 @@ import { portalDropOnCubeFrames } from "./12-portal-drop-on-cube-frames"
 import { portalDropOnCubeLaunch } from "./13-portal-drop-on-cube-launch"
 import { pistonLaunch } from "./14-piston-launch"
 import { pistonLaunchPortal } from "./15-piston-launch-portal"
+import { pistonLaunchTwoPortals } from "./15b-piston-launch-two-portals"
 import { portalSwallowsPiston } from "./16-portal-swallows-piston"
 import { portalSwallowsShortPiston } from "./17-portal-swallows-short-piston"
 import { portalDropOnCubeLaunchCopy } from "./18-portal-drop-on-cube-launch-copy"
@@ -36,6 +37,7 @@ export const scenarios: Scenario[] = [
   // portalDropOnCubeLaunch,
   pistonLaunch,
   pistonLaunchPortal,
+  pistonLaunchTwoPortals,
   portalSwallowsPiston,
   portalSwallowsShortPiston,
   portalDropOnCubeLaunchCopy,
